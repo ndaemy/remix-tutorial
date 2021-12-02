@@ -9,7 +9,11 @@
     "postinstall": "remix setup node",
     "start": "remix-serve build"
   },
+  "prisma": {
+    "seed": "node --require esbuild-register prisma/seed.ts"
+  },
   "dependencies": {
+    "@prisma/client": "^3.6.0",
     "@remix-run/react": "^1.0.6",
     "@remix-run/serve": "^1.0.6",
     "react": "^17.0.2",
@@ -20,7 +24,9 @@
     "@remix-run/dev": "^1.0.6",
     "@types/react": "^17.0.24",
     "@types/react-dom": "^17.0.9",
+    "esbuild-register": "^3.2.0",
     "prettier": "^2.5.0",
+    "prisma": "^3.6.0",
     "typescript": "^4.1.2"
   },
   "engines": {

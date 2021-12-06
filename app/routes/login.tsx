@@ -1,7 +1,7 @@
 import type { ActionFunction, LinksFunction } from "remix";
 import { Link, useActionData, useSearchParams } from "remix";
 import { db } from "~/utils/db.server";
-import { createUserSession, login } from "~/utils/session.server";
+import { createUserSession, login, register } from "~/utils/session.server";
 import stylesUrl from "../styles/login.css";
 
 export const links: LinksFunction = () => {
@@ -38,7 +38,7 @@ export const action: ActionFunction = async ({ request }): Promise<Response | Ac
   const loginType = form.get("loginType");
   const username = form.get("username");
   const password = form.get("password");
-  const redirectTo = form.get("redirectTo");
+  const redirectTo = form.get("redirectTo") || "/jokes";
   if (
     typeof loginType !== "string" ||
     typeof username !== "string" ||
@@ -60,7 +60,7 @@ export const action: ActionFunction = async ({ request }): Promise<Response | Ac
   }
 
   switch (loginType) {
-    case "login":
+    case "login": {
       const user = await login({ username, password });
       console.log({ user });
       if (!user) {
@@ -70,7 +70,8 @@ export const action: ActionFunction = async ({ request }): Promise<Response | Ac
         };
       }
       return createUserSession(user.id, redirectTo);
-    case "register":
+    }
+    case "register": {
       const userExists = await db.user.findFirst({
         where: { username },
       });
@@ -80,9 +81,15 @@ export const action: ActionFunction = async ({ request }): Promise<Response | Ac
           formError: `User with username ${username} already exists`,
         };
       }
-      // create the user
-      // create their session and redirect to /jokes
-      return { fields, formError: "Not implemented" };
+      const user = await register({ username, password });
+      if (!user) {
+        return {
+          fields,
+          formError: "Something went wrong trying to create a new user.",
+        };
+      }
+      return createUserSession(user.id, redirectTo);
+    }
     default:
       return { fields, formError: "Login type invalid" };
   }

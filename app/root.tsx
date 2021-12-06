@@ -13,6 +13,22 @@ export const links: LinksFunction = () => {
   ];
 };
 
+function Document({ children, title = "Remix, So great, it's funny!" }: { children: React.ReactNode; title?: string }) {
+  return (
+    <html lang="en">
+      <head>
+        <meta charSet="utf-8" />
+        <title>{title}</title>
+        <Links />
+      </head>
+      <body>
+        {children}
+        {process.env.NODE_ENV === "development" && <LiveReload />}
+      </body>
+    </html>
+  );
+}
+
 export default function App() {
   return (
     <html lang="en">
@@ -26,5 +42,16 @@ export default function App() {
         {process.env.NODE_ENV === "development" && <LiveReload />}
       </body>
     </html>
+  );
+}
+
+export function ErrorBoundary({ error }: { error: Error }) {
+  return (
+    <Document title="Uh-oh!">
+      <div className="error-container">
+        <h1>App Error</h1>
+        <pre>{error.message}</pre>
+      </div>
+    </Document>
   );
 }

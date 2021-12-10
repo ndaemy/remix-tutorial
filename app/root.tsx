@@ -1,4 +1,4 @@
-import { Links, LiveReload, MetaFunction, Outlet, useCatch, Meta } from "remix";
+import { Links, LiveReload, MetaFunction, Outlet, useCatch, Meta, Scripts } from "remix";
 import type { LinksFunction } from "remix";
 
 import globalStylesUrl from "./styles/global.css";
@@ -36,6 +36,7 @@ function Document({ children, title = "Remix, So great, it's funny!" }: { childr
       </head>
       <body>
         {children}
+        <Scripts />
         {process.env.NODE_ENV === "development" && <LiveReload />}
       </body>
     </html>
@@ -73,6 +74,8 @@ export function CatchBoundary() {
 }
 
 export function ErrorBoundary({ error }: { error: Error }) {
+  console.error(error);
+
   return (
     <Document title="Uh-oh!">
       <div className="error-container">
